@@ -28,7 +28,6 @@ export const NavComp = () => {
               <RegisterComp />
             </>
           )}
-
         </div>
       </div>
     </div>

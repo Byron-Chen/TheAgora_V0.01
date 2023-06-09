@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react'
-import { Modal, Button, Container, Row, Col, Card } from 'react-bootstrap'
+import React, { useContext, useRef, useState } from 'react'
+import { Modal, Button, Container, Row, Col, Card, Form } from 'react-bootstrap'
 import Countdown from 'react-countdown'
 import { AuthContext } from '../../context/AuthContext';
 import './auctioncard.css';
@@ -7,9 +7,17 @@ import './auctioncard.css';
 
 export const AuctionCard = ({ item }) => {
     let expiredDate = item.duration;
-    const { currentUser, bidAuction, endAuction } = useContext(AuthContext);
+    const { currentUser, bidAuction, endAuction, addBid } = useContext(AuthContext);
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [formData, setFormData] = useState({
+        priceForm: '',
+        amountForm:''
+    })
+
+
+    const bidPriceRef = useRef();
+    const bidAmountRef = useRef();
 
     const openModal = () => {
         setModalVisible(true);
@@ -18,6 +26,23 @@ export const AuctionCard = ({ item }) => {
     const closeModal = () => {
         setModalVisible(false);
     };
+
+    const handleInputChange = (event) => {
+        setFormData({
+          ...formData,
+          [event.target.name]: event.target.value
+        });
+      };
+    
+      const handleFormSubmit = (event) => {
+        event.preventDefault();
+        // Perform form submission logic here
+        // Reset form inputs after submission
+        setFormData({
+            priceForm: '',
+            amountForm:''
+        });
+      };
 
     const renderAmountBoxes = (amounta) => {
         const amount = amounta;
@@ -33,7 +58,7 @@ export const AuctionCard = ({ item }) => {
                 if (boxNumber <= amount) {
                     rowBoxes.push(
                         <div key={boxNumber} className="amount-box">
-                            
+
                         </div>
                     );
                 }
@@ -51,9 +76,9 @@ export const AuctionCard = ({ item }) => {
 
 
     const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
-        if (completed) {
-            return null;
-        }
+        //if (completed) {
+        //    return null;
+        //}
 
         return (
             <div>
@@ -83,7 +108,6 @@ export const AuctionCard = ({ item }) => {
                             </Row>
                             <Row>
                                 <Col>
-
                                     <h4>Details</h4>
                                     <p>{item.desc}</p>
                                     <h4>Specifications</h4>
@@ -97,14 +121,44 @@ export const AuctionCard = ({ item }) => {
                                     </div>
                                     <Card style={{
                                         width: '18rem',
-                                        boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)'
-                                        }}>
+                                        boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                                        marginTop: '10px'
+                                    }}>
+                                        <Card.Body className="justify-content-center">
+                                            <Row xs="auto" >
+                                                <Col xs={5}>
+                                                    <Form.Control type="number" required ref={bidAmountRef} />
+                                                </Col>
+                                                <Col>
+                                                    <h4 style={{ margin: "0", textAlign: "center" }}>X</h4>
+                                                </Col>
+                                                <Col xs={5}>
+                                                    <Form.Control type="number" placeholder='$' required ref={bidPriceRef} />
+                                                </Col>
+                                            </Row>
+                                            <div className="d-flex justify-content-center">
+                                                <div onClick={() => props.addBid(props.item.id, props.owner.email, bidPriceRef.current.value, bidAmountRef.current.value)} className="btn btn-primary">
+                                                    Bid
+                                                </div>
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                    <Card style={{
+                                        width: '18rem',
+                                        boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                                        marginTop: '10px'
+                                    }}>
                                         <Card.Body>
-                                            <Card.Title>Current Bids</Card.Title>
-                                            <Card.Subtitle className="mb-2 text-muted">Winner Name</Card.Subtitle>
-                                            <Card.Text>
-                                                dude bid $203023 or something
-                                            </Card.Text>
+                                            <Card.Title className="text-center" >Current Bids</Card.Title>
+                                            <div style={{ display: "flex", flexDirection: "column" }}>
+                                                {props.item.bidsList && props.item.bidsList.map((item, index) => (
+                                                    <div key={index}>
+                                                        <p style={{ margin: "0", float: "left" }}>{item.amount} x ${item.price}</p>
+                                                        <p style={{ margin: "0", float: "right" }}>{item.email}</p>
+
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </Card.Body>
                                     </Card>
                                 </Col>
@@ -115,7 +169,7 @@ export const AuctionCard = ({ item }) => {
                         {/* Display other item properties as needed */}
                     </Modal.Body>
                     <Modal.Footer style={{ backgroundColor: '#F0F2F5' }}>
-                        
+
                     </Modal.Footer>
                 </Modal>
 
@@ -136,37 +190,36 @@ export const AuctionCard = ({ item }) => {
                                 {props.item.title} X {props.item.amount}
                             </p>
 
-
-                            <div className="d-flex justify-content-between align-item-center">
-                                <h5>
-                                    {days * 24 + hours} hr: {minutes} min: {seconds} sec
-                                </h5>
-                            </div>
+                            {completed ? (
+                                <h5>Completed</h5>) : (
+                                <div className="d-flex justify-content-between align-item-center">
+                                    <h5>
+                                        {days * 24 + hours} hr: {minutes} min: {seconds} sec
+                                    </h5>
+                                </div>)
+                            }
                             <p className="card-text">
                                 {props.item.desc}
                             </p>
                             <div className="d-flex justify-content-between align-item-center">
-                                <div>
+                                {/* <div>
+                                    current bid amount left 3
                                     {!props.owner ? (
                                         <div onClick={() => props.bidAuction()}
                                             className="btn btn-primary">Bid</div>
                                     ) : props.owner.email === props.item.email ? (
-
                                         <div
                                             onClick={() => props.endAuction(props.item.id)}
                                             className="btn btn-primary">Cancel Auction</div>
                                     ) : props.owner.email === props.item.curWinner ? (
                                         <p className="display-6">Winner</p>
-
                                     ) : (
                                         <div
                                             onClick={() => props.bidAuction(props.item.id, props.item.curPrice)}
                                             className="btn btn-primary">Bid
                                         </div>
-
                                     )}
-
-                                </div>
+                                </div> */}
                                 <p className="display-6">${props.item.curPrice}</p>
                             </div>
 
@@ -185,6 +238,7 @@ export const AuctionCard = ({ item }) => {
             <Countdown
                 owner={currentUser}
                 date={expiredDate}
+                addBid={addBid}
                 bidAuction={bidAuction}
                 endAuction={endAuction}
                 item={item}

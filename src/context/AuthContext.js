@@ -20,6 +20,19 @@ export const AuthProvider = ({children}) => {
         return authApp.signOut();
     }
 
+    const addBid = (auctionId, email, price, amount) => {
+        const db = firestoreApp.collection('auctions');
+        const auctionRef = db.doc(auctionId);
+      
+        return auctionRef.get().then((doc) => {
+            const bidsList = doc.data().bidsList || []; 
+            bidsList.push({ email: email, amount: amount , price: price});
+
+            return auctionRef.update({ bidsList: bidsList });
+
+        });
+      };
+
     const bidAuction = (auctionId, price) =>{ 
         if(!currentUser){
             return setGlobalMsg("Please Login First")
@@ -51,7 +64,7 @@ export const AuthProvider = ({children}) => {
     }, [globalMsg])    
 
     return (
-        <AuthContext.Provider value={{currentUser, register, login, logout, bidAuction, endAuction, globalMsg}}>
+        <AuthContext.Provider value={{currentUser, register, login, logout, bidAuction, endAuction, addBid, globalMsg}}>
             {!loading && children}
         </AuthContext.Provider>
     );

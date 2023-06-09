@@ -1,6 +1,7 @@
 import { Button, Form, Modal , Alert} from 'react-bootstrap'
 import React, {useRef, useState, useContext} from 'react'
 import { AuthContext } from '../../context/AuthContext';
+import profileimg from '../../assets/profilepic4.png'
 
 export const ProfilePage = () => {
     const [showForm, setShowForm] = useState(false);
@@ -18,7 +19,8 @@ export const ProfilePage = () => {
             <Modal.Title>Profile</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-                {currentUser.email}
+          <img src={profileimg} alt="profilepic" height="100" />
+                <div>{currentUser.email}</div>
 
         </Modal.Body>
         <Modal.Footer>
