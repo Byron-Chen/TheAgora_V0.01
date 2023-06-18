@@ -7,12 +7,12 @@ import './auctioncard.css';
 
 export const AuctionCard = ({ item }) => {
     let expiredDate = item.duration;
-    const { currentUser, bidAuction, endAuction, addBid } = useContext(AuthContext);
+    const { currentUser, bidAuction, endAuction, addBid, checkBid } = useContext(AuthContext);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [formData, setFormData] = useState({
         priceForm: '',
-        amountForm:''
+        amountForm: ''
     })
 
 
@@ -29,20 +29,20 @@ export const AuctionCard = ({ item }) => {
 
     const handleInputChange = (event) => {
         setFormData({
-          ...formData,
-          [event.target.name]: event.target.value
+            ...formData,
+            [event.target.name]: event.target.value
         });
-      };
-    
-      const handleFormSubmit = (event) => {
+    };
+
+    const handleFormSubmit = (event) => {
         event.preventDefault();
         // Perform form submission logic here
         // Reset form inputs after submission
         setFormData({
             priceForm: '',
-            amountForm:''
+            amountForm: ''
         });
-      };
+    };
 
     const renderAmountBoxes = (amounta) => {
         const amount = amounta;
@@ -113,14 +113,34 @@ export const AuctionCard = ({ item }) => {
                                     <h4>Specifications</h4>
                                     <p>blablldf </p>
                                     <h4>Comments</h4>
-                                    <p>this sucks </p>
+                                    <p>this sucks. should user be able to bid if they have gotten their amount split?</p>
                                 </Col>
                                 <Col>
                                     <div className='displayitemsfromamount'>
                                         {renderAmountBoxes(props.item.amount)}
                                     </div>
                                     <Card style={{
-                                        width: '18rem',
+                                        width: '100%',
+                                        boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                                        marginTop: '10px'
+                                    }}>
+                                        <Card.Body className="justify-content-center">
+                                            <Card.Title className="text-center" >Current Winner</Card.Title>
+                                            <div style={{ display: "flex", flexDirection: "column" }}>
+
+                                                {props.item.currentWinner && props.item.currentWinner.map((item, index) => (
+                                                    <div key={index}>
+                                                        <p style={{ margin: "0", float: "left" }}>{item.amount} x ${item.price}</p>
+                                                        <p style={{ margin: "0", float: "right" }}>{item.email}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                    {(!completed) ? (
+
+                                    <Card style={{
+                                        width: '100%',
                                         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
                                         marginTop: '10px'
                                     }}>
@@ -136,15 +156,16 @@ export const AuctionCard = ({ item }) => {
                                                     <Form.Control type="number" placeholder='$' required ref={bidPriceRef} />
                                                 </Col>
                                             </Row>
-                                            <div className="d-flex justify-content-center">
+                                            <div className="d-flex justify-content-center mt-1">
                                                 <div onClick={() => props.addBid(props.item.id, props.owner.email, bidPriceRef.current.value, bidAmountRef.current.value)} className="btn btn-primary">
-                                                    Bid
+                                                    Place Bid
                                                 </div>
                                             </div>
                                         </Card.Body>
                                     </Card>
+                                    ) : <h5 className='d-flex justify-content-center mt-1'>Bids Finished</h5>}
                                     <Card style={{
-                                        width: '18rem',
+                                        width: '100%',
                                         boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
                                         marginTop: '10px'
                                     }}>
@@ -155,7 +176,6 @@ export const AuctionCard = ({ item }) => {
                                                     <div key={index}>
                                                         <p style={{ margin: "0", float: "left" }}>{item.amount} x ${item.price}</p>
                                                         <p style={{ margin: "0", float: "right" }}>{item.email}</p>
-
                                                     </div>
                                                 ))}
                                             </div>
@@ -164,17 +184,13 @@ export const AuctionCard = ({ item }) => {
                                 </Col>
                             </Row>
                         </Container>
-
-
-                        {/* Display other item properties as needed */}
+                        {}
                     </Modal.Body>
                     <Modal.Footer style={{ backgroundColor: '#F0F2F5' }}>
-
                     </Modal.Footer>
                 </Modal>
 
-                <div className={`col`} onClick={openModal}
-                >
+                <div className={`col`} onClick={openModal}>
                     <div className="card shadow-sm ">
                         <div style={{
                             height: '320px',
@@ -220,7 +236,7 @@ export const AuctionCard = ({ item }) => {
                                         </div>
                                     )}
                                 </div> */}
-                                <p className="display-6">${props.item.curPrice}</p>
+                                <h5>Highest Bid: ${props.item.curPrice}</h5>
                             </div>
 
                         </div>
@@ -241,6 +257,7 @@ export const AuctionCard = ({ item }) => {
                 addBid={addBid}
                 bidAuction={bidAuction}
                 endAuction={endAuction}
+                checkBid={checkBid}
                 item={item}
                 renderer={renderer}
             />

@@ -42,6 +42,10 @@ export const AddAuction = ({ setAuction }) => {
             amount: itemAmount.current.value,
             duration: dueDate,
             bidsList: [],
+            currentWinner: [],
+            currentCatchup: [],
+            currentWinnerAmount : 0,
+            currentCatchupAmount: 0,
             itemImage: itemImage.current.files[0],
         }
 
