@@ -4,7 +4,9 @@
   }
 
 .displayitemsfromamount{
-  width: 240px;
+  width: 200px;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .amount-box{
@@ -17,4 +19,5 @@
 
 .amount-row{
   display: flex;
+  flex-wrap: wrap;
 }

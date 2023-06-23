@@ -1,5 +1,5 @@
-import { Button, Form, Modal , Alert} from 'react-bootstrap'
-import React, {useRef, useState, useContext} from 'react'
+import {Modal} from 'react-bootstrap'
+import React, { useState, useContext} from 'react'
 import { AuthContext } from '../../context/AuthContext';
 import profileimg from '../../assets/profilepic4.png'
 

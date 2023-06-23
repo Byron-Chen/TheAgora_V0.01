@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { firestoreApp } from '../config/firebase'
 
 export const useFirestore = (collection) => {

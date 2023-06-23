@@ -28,7 +28,8 @@ export const AuthProvider = ({ children }) => {
     const updateWinnerList = (auctionRef, email, price, amount, powerBuy = false) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
-            let currentWinnerAmount = parseInt(doc.data().currentWinnerAmount)
+            let currentWinnerAmount = parseFloat(doc.data().currentWinnerAmount)
+            const winnerObject = { email: email, amount: amount, price: price}
             //auto add no checks
             if (powerBuy) {
                 winnerList = [{ email: email, amount: amount, price: price }]
@@ -36,53 +37,46 @@ export const AuthProvider = ({ children }) => {
                 //read through list to determine ifit can fit
                 //price > time > amount
                 if (winnerList.length !== 0) {
-                    if (parseInt(doc.data().currentWinnerAmount) + parseInt(amount) <= parseInt(doc.data().amount)) {
+                    if (parseFloat(doc.data().currentWinnerAmount) + parseFloat(amount) <= parseFloat(doc.data().amount)) {
                         for (let i = 0; i < winnerList.length; i++) {
                             if (winnerList[i].price < price) {
-                                winnerList.unshift({ email: email, amount: amount, price: price })
+                                winnerList.splice(i, 0, winnerObject);
                                 break
                             } else if (winnerList[i].price == price) {
-                                winnerList.push({ email: email, amount: amount, price: price })
+                                winnerList.splice(i, 0, winnerObject);
                                 break
                             }
                         }
-                        //winnerList.push({ email: email, amount: amount, price: price })
-                        //currentWinnerAmount += parseInt(amount)
-                    } else if (parseInt(price) >= parseInt(doc.data().curPrice)){
+                        //winnerList.push(winnerObject)
+                        //currentWinnerAmount += parseFloat(amount)
+                    } else if (parseFloat(price) >= parseFloat(doc.data().curPrice)){
                         //check price higher then add to winnerlist
                         for (let i = 0; i < winnerList.length; i++) {
-                            console.log(winnerList[i].price, price)
-                            if (parseInt(winnerList[i].price) < parseInt(price)) {
-                                console.log(1)
-                                winnerList.unshift({ email: email, amount: amount, price: price })
-                                break
-                            } else if (parseInt(winnerList[i].price) < parseInt(price)) {
-                                //put in front of i
-                                console.log(2)
-                                winnerList.splice(i, 0, { email: email, amount: amount, price: price });
+                            if (parseFloat(price) > parseFloat(winnerList[i].price) ) {
+                                winnerList.splice(i, 0, winnerObject);
                                 break
                             }else if (i == winnerList.length -1){
-                                console.log(3)
-                                winnerList.push({ email: email, amount: amount, price: price })
+                                //or this
+                                winnerList.push(winnerObject)
                                 break
                             }
                         }
                     }
                 } else {
-                    winnerList.push({ email: email, amount: amount, price: price })
+                    winnerList.push(winnerObject)
                 }
-                currentWinnerAmount += parseInt(amount)
+                currentWinnerAmount += parseFloat(amount)
 
-                if (currentWinnerAmount > parseInt(doc.data().amount)){
+                if (currentWinnerAmount > parseFloat(doc.data().amount)){
                     let i = winnerList.length - 1
-                    while( currentWinnerAmount - parseInt(doc.data().amount) > 0){
-                        if (winnerList[i].amount <= currentWinnerAmount - parseInt(doc.data().amount)){
+                    while( currentWinnerAmount - parseFloat(doc.data().amount) > 0){
+                        if (winnerList[i].amount <= currentWinnerAmount - parseFloat(doc.data().amount)){
                             currentWinnerAmount -= winnerList[i].amount
                             winnerList.splice(i, 1)
                         } else {
                             
-                            winnerList[i].amount -= (currentWinnerAmount - parseInt(doc.data().amount))
-                            currentWinnerAmount = parseInt(doc.data().amount)
+                            winnerList[i].amount -= (currentWinnerAmount - parseFloat(doc.data().amount))
+                            currentWinnerAmount = parseFloat(doc.data().amount)
                         }
 
                         i -= 1

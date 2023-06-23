@@ -14,7 +14,17 @@ export const AuctionCard = ({ item }) => {
         priceForm: '',
         amountForm: ''
     })
+    const md5 = require('md5')
+    const colours = ["#e6261f","#eb7532","#f7d038","#a3e048","#49da9a","#34bbe6","#4355db","#d23be7"]
 
+    const rndColor = (email) =>{
+        const hash = md5(email)
+        const hashSlice = hash.slice(0, 6); // Take the first 6 characters of the hash
+        const hashNum = parseInt(hashSlice, 16);
+        const index = hashNum % colours.length;
+
+        return colours[index]
+    } 
 
     const bidPriceRef = useRef();
     const bidAmountRef = useRef();
@@ -44,34 +54,31 @@ export const AuctionCard = ({ item }) => {
         });
     };
 
-    const renderAmountBoxes = (amounta) => {
-        const amount = amounta;
-        const rows = Math.ceil(amount / 10); // Calculate the number of rows
+    const renderAmountBoxes = (amount, list) => {
         const boxes = [];
-
-        for (let i = 0; i < rows; i++) {
-            const rowBoxes = [];
-
-            for (let j = 0; j < 10; j++) {
-                const boxNumber = i * 10 + j + 1;
-
-                if (boxNumber <= amount) {
-                    rowBoxes.push(
-                        <div key={boxNumber} className="amount-box">
-
-                        </div>
-                    );
-                }
+        let boxCounter = 1;
+    
+        for (let i = 0; i < list.length; i++) {
+            const { email, amount } = list[i];
+    
+            const color = rndColor(email); // Get the random color based on email
+    
+            for (let j = 0; j < amount; j++) {
+                const boxKey = `box-${boxCounter}`;
+    
+                boxes.push(
+                    <div
+                        key={boxKey}
+                        className="amount-box"
+                        style={{ backgroundColor: color }} // Assign the random color as the background color
+                    ></div>
+                );
+    
+                boxCounter++;
             }
-
-            boxes.push(
-                <div key={i} className="amount-row">
-                    {rowBoxes}
-                </div>
-            );
         }
-
-        return boxes;
+    
+        return <div className="amount-row">{boxes}</div>;
     };
 
 
@@ -84,7 +91,7 @@ export const AuctionCard = ({ item }) => {
             <div>
                 <Modal show={modalVisible} onHide={closeModal} size="lg" aria-labelledby="contained-modal-title-vcenter" centered  >
                     <Modal.Header style={{ backgroundColor: '#F0F2F5' }}>
-                        <Modal.Title>{item.title}</Modal.Title>
+                        <Modal.Title>{props.item.title} x {props.item.amount}</Modal.Title>
                         <Button variant="danger" onClick={closeModal}>
                             Close
                         </Button>
@@ -117,7 +124,7 @@ export const AuctionCard = ({ item }) => {
                                 </Col>
                                 <Col>
                                     <div className='displayitemsfromamount'>
-                                        {renderAmountBoxes(props.item.amount)}
+                                        {renderAmountBoxes(props.item.amount, props.item.currentWinner)}
                                     </div>
                                     <Card style={{
                                         width: '100%',
