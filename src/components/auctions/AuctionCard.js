@@ -77,6 +77,17 @@ export const AuctionCard = ({ item }) => {
                 boxCounter++;
             }
         }
+        while (boxCounter - 1 < amount){
+            const boxKey = `box-${boxCounter}`;
+            boxes.push(
+                <div
+                    key={boxKey}
+                    className="amount-box"
+                    style={{ backgroundColor: '#808080' }} // Assign the random color as the background color
+                ></div>
+            );
+            boxCounter ++
+        }
     
         return <div className="amount-row">{boxes}</div>;
     };
