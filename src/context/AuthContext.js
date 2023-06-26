@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
                                 winnerList.splice(i, 0, winnerObject);
                                 break
                             } else if (winnerList[i].price == price) {
-                                winnerList.splice(i, 0, winnerObject);
+                                winnerList.push(winnerObject);
                                 break
                             }
                         }
