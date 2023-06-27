@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import {motion} from "framer-motion"
-//import {motion} from "framer-motion/dist/framer-motion"; 
-import useStorage from '../../hooks/useStorage';
+import React, { useEffect } from "react";
+//import {motion} from "framer-motion"
+import { motion } from "framer-motion/dist/framer-motion";
+import useStorage from "../../hooks/useStorage";
 
 export const ProgressBar = ({ auction, setAuction }) => {
   const { progress, isCompleted } = useStorage(auction);
@@ -14,7 +14,7 @@ export const ProgressBar = ({ auction, setAuction }) => {
 
   return (
     <motion.div
-      style={{ height: '5px', background: 'black' }}
+      style={{ height: "5px", background: "black" }}
       initial={{ width: 0 }}
       animate={{ width: `${progress}%` }}
     />

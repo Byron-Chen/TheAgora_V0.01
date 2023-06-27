@@ -19,7 +19,7 @@ export const AuctionBody = () => {
         {currentUser && <AddAuction setAuction={setAuction} />}
 
         {docs && (
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
             {docs.map((doc) =>{
               return <AuctionCard item ={doc} key={doc.id} />
             })}

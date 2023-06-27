@@ -57,7 +57,7 @@ export const AddAuction = ({ setAuction }) => {
             <div className="col d-flex justify-content-center my-3">
                 <div onClick={openForm} className="btn btn-success mx-2">Add Auction</div>
             </div>
-            <Modal centered show={showForm} onHide={closeForm}>
+            <Modal centered show={showForm} onHide={closeForm} size="lg">
                 <form onSubmit={submitForm}>
                     <Modal.Header>
                         <Modal.Title>Create Auction</Modal.Title>
@@ -71,12 +71,12 @@ export const AddAuction = ({ setAuction }) => {
                                     <Form.Control type="text" required ref={itemTitle} />
                                 </Form.Group>
                             </Col>
-                            <Col>
+                        </Row>
+                        <Row>
                                 <Form.Group>
                                     <Form.Label>Item Description</Form.Label>
-                                    <Form.Control type="text" required ref={itemDesc} />
+                                    <Form.Control as="textarea" rows={3}  required ref={itemDesc} />
                                 </Form.Group>
-                            </Col>
                         </Row>
                         <Row>
                             <Col>

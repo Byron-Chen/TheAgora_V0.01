@@ -21,7 +21,7 @@ export const ProfilePage = () => {
         <Modal.Body>
           <img src={profileimg} alt="profilepic" height="100" />
                 <div>{currentUser.email}</div>
-
+        <h3>Friends List</h3>
         </Modal.Body>
         <Modal.Footer>
         </Modal.Footer>

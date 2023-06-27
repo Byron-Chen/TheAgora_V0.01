@@ -1,242 +1,367 @@
-import React, { useContext, useRef, useState } from 'react'
-import { Modal, Button, Container, Row, Col, Card, Form } from 'react-bootstrap'
-import Countdown from 'react-countdown'
-import { AuthContext } from '../../context/AuthContext';
-import './auctioncard.css';
+import React, { useContext, useRef, useState } from "react";
+import {
+  Modal,
+  Button,
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+} from "react-bootstrap";
+import Countdown from "react-countdown";
+import { AuthContext } from "../../context/AuthContext";
 
+import "./auctioncard.css";
 
 export const AuctionCard = ({ item }) => {
-    let expiredDate = item.duration;
-    const { currentUser, bidAuction, endAuction, addBid, checkBid } = useContext(AuthContext);
+  let expiredDate = item.duration;
+  const { currentUser, bidAuction, endAuction, addBid, checkBid } = useContext(
+    AuthContext
+  );
+  
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [formData, setFormData] = useState({
-        priceForm: '',
-        amountForm: ''
-    })
-    const md5 = require('md5')
-    const colours = ["#e6261f","#eb7532","#f7d038","#a3e048","#49da9a","#34bbe6","#4355db","#d23be7"]
+  const [modalVisible, setModalVisible] = useState(false);
+  const [formData, setFormData] = useState({
+    priceForm: "",
+    amountForm: "",
+  });
+  const md5 = require("md5");
+    const colours = [
+        "#e6261f",
+        "#eb7532",
+        "#f7d038",
+        "#a3e048",
+        "#49da9a",
+        "#34bbe6",
+        "#4355db",
+        "#d23be7",
+        '#77D64D',
+        '#4D830D',
+        '#E5FFB3',
+        '#42890A',
+        '#C55013',
+        '#6F0B19',
+        '#EC8688',
+        '#3389DE',
+        '#93B8C2',
+        '#A48FCB',
+        '#4A9B51',
+        '#A980DE',
+        '#3FCEF8',
+        '#3D38F9',
+        '#089C28',
+        '#0085E9',
+        '#BE1306',
+        '#839D89',
+        '#C65C13',
+        '#F225F5',
+        '#D11B71',
+        '#BD6B55',
+        '#E0CF69',
+        '#838AE9',
+        '#DC1139',
+        '#FDA527',
+        '#EE4257',
+        '#A1FFF9',
+        '#4CFEFB',
+        '#533500',
+        '#FBAE06',
+        '#486BDC',
+        '#F94D11',
+        '#E94E6A',
+        '#6065DD',
+        '#981757',
+        '#6A7ABB',
+        '#25A290',
+        '#BE6188',
+        '#EFB602',
+        '#4FCE16',
+        '#7E1A9C',
+        '#EABACC',
+        '#DC16CC',
+        '#365E44',
+        '#2E7FD0',
+        '#C0455F',
+        '#5F2782',
+        '#4BF1D0'
+    ];
 
-    const rndColor = (email) =>{
-        const hash = md5(email)
-        const hashSlice = hash.slice(0, 6); // Take the first 6 characters of the hash
-        const hashNum = parseInt(hashSlice, 16);
-        const index = hashNum % colours.length;
+  const rndColor = (email) => {
+    const hash = md5(email);
+    const hashSlice = hash.slice(0, 6); // Take the first 6 characters of the hash
+    const hashNum = parseInt(hashSlice, 16);
+    const index = hashNum % colours.length;
 
-        return colours[index]
-    } 
+    return colours[index];
+  };
 
-    const bidPriceRef = useRef();
-    const bidAmountRef = useRef();
+  const bidPriceRef = useRef();
+  const bidAmountRef = useRef();
 
-    const openModal = () => {
-        setModalVisible(true);
-    };
+  const openModal = () => {
+    setModalVisible(true);
+  };
 
-    const closeModal = () => {
-        setModalVisible(false);
-    };
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
-    const handleInputChange = (event) => {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-        });
-    };
+  const handleInputChange = (event) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
+  };
 
-    const handleFormSubmit = (event) => {
-        event.preventDefault();
-        // Perform form submission logic here
-        // Reset form inputs after submission
-        setFormData({
-            priceForm: '',
-            amountForm: ''
-        });
-    };
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    // Perform form submission logic here
+    // Reset form inputs after submission
+    setFormData({
+      priceForm: "",
+      amountForm: "",
+    });
+  };
 
-    const renderAmountBoxes = (amount, list) => {
-        const boxes = [];
-        let boxCounter = 1;
-    
-        for (let i = 0; i < list.length; i++) {
-            const { email, amount } = list[i];
-    
-            const color = rndColor(email); // Get the random color based on email
-    
-            for (let j = 0; j < amount; j++) {
-                const boxKey = `box-${boxCounter}`;
-    
-                boxes.push(
-                    <div
-                        key={boxKey}
-                        className="amount-box"
-                        style={{ backgroundColor: color }} // Assign the random color as the background color
-                    ></div>
-                );
-    
-                boxCounter++;
-            }
-        }
-        while (boxCounter - 1 < amount){
-            const boxKey = `box-${boxCounter}`;
-            boxes.push(
+  const renderAmountBoxes = (amount, list) => {
+    const boxes = [];
+    let boxCounter = 1;
+
+    for (let i = 0; i < list.length; i++) {
+      const { email, amount } = list[i];
+
+      const color = rndColor(email); // Get the random color based on email
+
+      for (let j = 0; j < amount; j++) {
+        const boxKey = `box-${boxCounter}`;
+
+        boxes.push(
+          <div
+            key={boxKey}
+            className="amount-box"
+            style={{ backgroundColor: color }} // Assign the random color as the background color
+          ></div>
+        );
+
+        boxCounter++;
+      }
+    }
+    while (boxCounter - 1 < amount) {
+      const boxKey = `box-${boxCounter}`;
+      boxes.push(
+        <div
+          key={boxKey}
+          className="amount-box"
+          style={{ backgroundColor: "#808080" }} // Assign the random color as the background color
+        ></div>
+      );
+      boxCounter++;
+    }
+
+    return <div className="amount-row">{boxes}</div>;
+  };
+
+  const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
+    //if (completed) {
+    //    return null;
+    //}
+
+    return (
+      <div>
+        <Modal
+          show={modalVisible}
+          onHide={closeModal}
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Header style={{ backgroundColor: "#F0F2F5" }}>
+            <Modal.Title>
+              {props.item.title} x {props.item.amount}
+            </Modal.Title>
+            <Button variant="danger" onClick={closeModal}>
+              Close
+            </Button>
+          </Modal.Header>
+          <Modal.Body style={{ backgroundColor: "#F0F2F5" }}>
+            <Container>
+              <Row>
                 <div
-                    key={boxKey}
-                    className="amount-box"
-                    style={{ backgroundColor: '#808080' }} // Assign the random color as the background color
-                ></div>
-            );
-            boxCounter ++
-        }
-    
-        return <div className="amount-row">{boxes}</div>;
-    };
-
-
-    const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
-        //if (completed) {
-        //    return null;
-        //}
-
-        return (
-            <div>
-                <Modal show={modalVisible} onHide={closeModal} size="lg" aria-labelledby="contained-modal-title-vcenter" centered  >
-                    <Modal.Header style={{ backgroundColor: '#F0F2F5' }}>
-                        <Modal.Title>{props.item.title} x {props.item.amount}</Modal.Title>
-                        <Button variant="danger" onClick={closeModal}>
-                            Close
-                        </Button>
-                    </Modal.Header>
-                    <Modal.Body style={{ backgroundColor: '#F0F2F5' }}>
-                        <Container>
-                            <Row>
-                                <div
-                                    style={{
-                                        height: '320px',
-                                        backgroundImage: `url(${props.item.imgUrl})`,
-                                        backgroundSize: 'contain',
-                                        backgroundColor: '#FFFFFF',
-                                        border: '1px solid black',
-                                        backgroundRepeat: 'no-repeat',
-                                        backgroundPosition: 'center',
-                                        marginBottom: '1rem'
-                                    }}
-                                    className="w-100" />
-
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <h4>Details</h4>
-                                    <p>{item.desc}</p>
-                                    <h4>Specifications</h4>
-                                    <p>blablldf </p>
-                                    <h4>Comments</h4>
-                                    <p>this sucks. should user be able to bid if they have gotten their amount split?</p>
-                                </Col>
-                                <Col>
-                                    <div className='displayitemsfromamount'>
-                                        {renderAmountBoxes(props.item.amount, props.item.currentWinner)}
-                                    </div>
-                                    <Card style={{
-                                        width: '100%',
-                                        boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-                                        marginTop: '10px'
-                                    }}>
-                                        <Card.Body className="justify-content-center">
-                                            <Card.Title className="text-center" >Current Winner</Card.Title>
-                                            <div style={{ display: "flex", flexDirection: "column" }}>
-
-                                                {props.item.currentWinner && props.item.currentWinner.map((item, index) => (
-                                                    <div key={index}>
-                                                        <p style={{ margin: "0", float: "left" }}>{item.amount} x ${item.price}</p>
-                                                        <p style={{ margin: "0", float: "right" }}>{item.email}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                    {(!completed) ? (
-
-                                    <Card style={{
-                                        width: '100%',
-                                        boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-                                        marginTop: '10px'
-                                    }}>
-                                        <Card.Body className="justify-content-center">
-                                            <Row xs="auto" >
-                                                <Col xs={5}>
-                                                    <Form.Control type="number" required ref={bidAmountRef} />
-                                                </Col>
-                                                <Col>
-                                                    <h4 style={{ margin: "0", textAlign: "center" }}>X</h4>
-                                                </Col>
-                                                <Col xs={5}>
-                                                    <Form.Control type="number" placeholder='$' required ref={bidPriceRef} />
-                                                </Col>
-                                            </Row>
-                                            <div className="d-flex justify-content-center mt-1">
-                                                <div onClick={() => props.addBid(props.item.id, props.owner.email, bidPriceRef.current.value, bidAmountRef.current.value)} className="btn btn-primary">
-                                                    Place Bid
-                                                </div>
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                    ) : <h5 className='d-flex justify-content-center mt-1'>Bids Finished</h5>}
-                                    <Card style={{
-                                        width: '100%',
-                                        boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-                                        marginTop: '10px'
-                                    }}>
-                                        <Card.Body>
-                                            <Card.Title className="text-center" >Current Bids</Card.Title>
-                                            <div style={{ display: "flex", flexDirection: "column" }}>
-                                                {props.item.bidsList && props.item.bidsList.map((item, index) => (
-                                                    <div key={index}>
-                                                        <p style={{ margin: "0", float: "left" }}>{item.amount} x ${item.price}</p>
-                                                        <p style={{ margin: "0", float: "right" }}>{item.email}</p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            </Row>
-                        </Container>
-                        {}
-                    </Modal.Body>
-                    <Modal.Footer style={{ backgroundColor: '#F0F2F5' }}>
-                    </Modal.Footer>
-                </Modal>
-
-                <div className={`col`} onClick={openModal}>
-                    <div className="card shadow-sm ">
-                        <div style={{
-                            height: '320px',
-                            backgroundImage: `url(${props.item.imgUrl})`,
-                            backgroundSize: 'contain',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center',
-                        }}
-                            className="w-100" />
-
-                        <div className="card-body">
-                            <p className="lead display-6">
-                                {props.item.title} X {props.item.amount}
-                            </p>
-
-                            {completed ? (
-                                <h5>Completed</h5>) : (
-                                <div className="d-flex justify-content-between align-item-center">
-                                    <h5>
-                                        {days * 24 + hours} hr: {minutes} min: {seconds} sec
-                                    </h5>
-                                </div>)
+                  style={{
+                    height: "320px",
+                    backgroundImage: `url(${props.item.imgUrl})`,
+                    backgroundSize: "contain",
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid black",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    marginBottom: "1rem",
+                  }}
+                  className="w-100"
+                />
+              </Row>
+              <Row>
+                <Col>
+                  <h4>Details</h4>
+                  <p>{item.desc}</p>
+                  <h4>Specifications</h4>
+                  <p>blablldf </p>
+                  <h4>Comments</h4>
+                  <p>
+                    this sucks. should user be able to bid if they have gotten
+                    their amount split?
+                  </p>
+                </Col>
+                <Col>
+                  <div className="displayitemsfromamount">
+                    {renderAmountBoxes(
+                      props.item.amount,
+                      props.item.currentWinner
+                    )}
+                  </div>
+                  <Card
+                    style={{
+                      width: "100%",
+                      boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <Card.Body className="justify-content-center">
+                      <Card.Title className="text-center">
+                        Current Winner
+                      </Card.Title>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        {props.item.currentWinner &&
+                          props.item.currentWinner.map((item, index) => (
+                            <div key={index}>
+                              <p style={{ margin: "0", float: "left" }}>
+                                {item.amount} x ${item.price}
+                              </p>
+                              <p style={{ margin: "0", float: "right" }}>
+                                {item.email}
+                              </p>
+                            </div>
+                          ))}
+                      </div>
+                    </Card.Body>
+                  </Card>
+                  {!completed? (
+                    <Card
+                      style={{
+                        width: "100%",
+                        boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <Card.Body className="justify-content-center">
+                        <Row xs="auto">
+                          <Col xs={5}>
+                            <Form.Control
+                              type="number"
+                              required
+                              ref={bidAmountRef}
+                            />
+                          </Col>
+                          <Col>
+                            <h4 style={{ margin: "0", textAlign: "center" }}>
+                              X
+                            </h4>
+                          </Col>
+                          <Col xs={5}>
+                            <Form.Control
+                              type="number"
+                              placeholder="$"
+                              required
+                              ref={bidPriceRef}
+                            />
+                          </Col>
+                        </Row>
+                        <div className="d-flex justify-content-center mt-1">
+                          <div
+                            onClick={() =>
+                              props.addBid(
+                                props.item.id,
+                                props.owner.email,
+                                bidPriceRef.current.value,
+                                bidAmountRef.current.value
+                              )
                             }
-                            <p className="card-text">
-                                {props.item.desc}
-                            </p>
-                            <div className="d-flex justify-content-between align-item-center">
-                                {/* <div>
+                            className="btn btn-primary"
+                          >
+                            Place Bid
+                          </div>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  ) : (
+                    <h5 className="d-flex justify-content-center mt-1">
+                      Bids Finished
+                    </h5>
+                  )}
+                  <Card
+                    style={{
+                      width: "100%",
+                      boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <Card.Body>
+                      <Card.Title className="text-center">
+                        Current Bids
+                      </Card.Title>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        {props.item.bidsList &&
+                          props.item.bidsList.map((item, index) => (
+                            <div key={index}>
+                              <p style={{ margin: "0", float: "left" }}>
+                                {item.amount} x ${item.price}
+                              </p>
+                              <p style={{ margin: "0", float: "right" }}>
+                                {item.email}
+                              </p>
+                            </div>
+                          ))}
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              </Row>
+            </Container>
+            {}
+          </Modal.Body>
+          <Modal.Footer style={{ backgroundColor: "#F0F2F5" }}></Modal.Footer>
+        </Modal>
+
+        <div className={`col`} onClick={openModal}>
+          <div className="card shadow-sm ">
+            <div
+              style={{
+                height: "300px",
+                backgroundImage: `url(${props.item.imgUrl})`,
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+              }}
+              className="w-100 bg-light"
+            />
+
+            <div className="card-body">
+              <h3>
+                {props.item.title} X {props.item.amount}
+              </h3>
+
+              {completed ? (
+                <h5>Completed</h5>
+              ) : (
+                <div className="d-flex justify-content-between align-item-center">
+                  <h5>
+                    {days * 24 + hours} hr: {minutes} min: {seconds} sec
+                  </h5>
+                </div>
+              )}
+              <p className="card-text">{props.item.desc}</p>
+              <div className="d-flex justify-content-between align-item-center">
+                {/* <div>
                                     current bid amount left 3
                                     {!props.owner ? (
                                         <div onClick={() => props.bidAuction()}
@@ -254,31 +379,42 @@ export const AuctionCard = ({ item }) => {
                                         </div>
                                     )}
                                 </div> */}
-                                <h5>Highest Bid: ${props.item.curPrice}</h5>
-                            </div>
-
+                {completed ? (
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <h5>Winner</h5>
+                    {props.item.bidsList && props.item.currentWinner.map((item, index) => (
+                        <div key={index} >
+                          <p style={{ margin: "0", float: "left" }}>
+                            {item.amount} x ${item.price} {item.email}
+                          </p>
                         </div>
-                    </div>
-                </div>
+                      ))}
+                      </div>
+                    
+                ):(
+                    <h5>Highest Bid: ${props.item.curPrice}</h5>
+                )}
+                
+              </div>
             </div>
-        )
-
-
-    }
-
-
-    return (
-        <div>
-            <Countdown
-                owner={currentUser}
-                date={expiredDate}
-                addBid={addBid}
-                bidAuction={bidAuction}
-                endAuction={endAuction}
-                checkBid={checkBid}
-                item={item}
-                renderer={renderer}
-            />
+          </div>
         </div>
+      </div>
     );
-}
+  };
+
+  return (
+    <div>
+      <Countdown
+        owner={currentUser}
+        date={expiredDate}
+        addBid={addBid}
+        bidAuction={bidAuction}
+        endAuction={endAuction}
+        checkBid={checkBid}
+        item={item}
+        renderer={renderer}
+      />
+    </div>
+  );
+};
