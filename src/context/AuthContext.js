@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     const isFriend = (friend) =>{
         const userDb = firestoreApp.collection('users')
         const userRef = userDb.doc(currentUser.email)
-        return userRef.get().then((doc =>{
+        return userRef.get().then((doc) =>{
             let friendsList = doc.data().friendsList || [];
             for (let i = 0; i < friendsList.length; i++) {
                 if (friend == friendsList[i]){
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
                 }
             }
             return false
-        }))
+        })
     }
 
     const addFriend = (friendId) =>{

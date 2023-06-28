@@ -6,7 +6,7 @@ import { useFirestore } from "../../hooks/useFirestore";
 export const AddFriends = () => {
   const [showForm, setShowForm] = useState(false);
 
-  const {isFriend, currentUser , addFriend} = useContext(AuthContext);
+  const {isFriend, addFriend} = useContext(AuthContext);
 
   const openForm = () => setShowForm(true);
   const closeForm = () => setShowForm(false);

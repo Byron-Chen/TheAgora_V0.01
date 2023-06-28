@@ -221,7 +221,7 @@ export const AuctionCard = ({ item }) => {
                     </Col>
                   </Form.Group>
                   </form>
-                  <div>
+                  <div style={{ display: "flex", flexDirection: "column" }}>
                   {props.item.comment &&
                           props.item.comment.map((item, index) => (
                             <div key={index}>
