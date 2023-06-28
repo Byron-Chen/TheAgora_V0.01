@@ -10,7 +10,7 @@ export const RegisterComp = () => {
     const passwordRef = useRef();
     const cmfpasswordRef = useRef();
 
-    const {register} = useContext(AuthContext);
+    const {register, addUsertoDb} = useContext(AuthContext);
 
     const openForm = () => setShowForm(true);
     const closeForm = () => setShowForm(false);
@@ -23,7 +23,11 @@ export const RegisterComp = () => {
         }
 
         try {
+            await addUsertoDb(emailRef.current.value)
+            console.log("added user1")
             await register(emailRef.current.value, passwordRef.current.value);
+            
+            console.log("added user")
             closeForm();
         } catch (error) {
             setError(error.message);

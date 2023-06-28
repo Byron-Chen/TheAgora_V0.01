@@ -15,11 +15,8 @@ import "./auctioncard.css";
 
 export const AuctionCard = ({ item }) => {
   let expiredDate = item.duration;
-  const { currentUser, bidAuction, endAuction, addBid, checkBid } = useContext(
-    AuthContext
-  );
+  const { currentUser, bidAuction, endAuction, addBid, checkBid, addComment} = useContext(AuthContext);
   
-
   const [modalVisible, setModalVisible] = useState(false);
   const [formData, setFormData] = useState({
     priceForm: "",
@@ -97,6 +94,7 @@ export const AuctionCard = ({ item }) => {
 
   const bidPriceRef = useRef();
   const bidAmountRef = useRef();
+  const auctionComment = useRef();
 
   const openModal = () => {
     setModalVisible(true);
@@ -161,6 +159,14 @@ export const AuctionCard = ({ item }) => {
     return <div className="amount-row">{boxes}</div>;
   };
 
+  const submitComment = async(e) => {
+    e.preventDefault();
+    //addComment(item, )
+    addComment(item, auctionComment.current.value, currentUser.email)
+    auctionComment.current.value = ""
+    
+  }
+
   const renderer = ({ days, hours, minutes, seconds, completed, props }) => {
     //if (completed) {
     //    return null;
@@ -207,10 +213,24 @@ export const AuctionCard = ({ item }) => {
                   <h4>Specifications</h4>
                   <p>blablldf </p>
                   <h4>Comments</h4>
-                  <p>
-                    this sucks. should user be able to bid if they have gotten
-                    their amount split?
-                  </p>
+                  <form onSubmit={submitComment}>
+                  <Form.Group>
+                    <Col>
+                      <Form.Control as="textarea" rows={1}  required ref={auctionComment} />
+                      <Button variant='primary' type="submit">Submit</Button>
+                    </Col>
+                  </Form.Group>
+                  </form>
+                  <div>
+                  {props.item.comment &&
+                          props.item.comment.map((item, index) => (
+                            <div key={index}>
+                              <p style={{ margin: "0", float: "left" }}>
+                                {item.email}: {item.comment}
+                              </p>
+                            </div>
+                          ))}
+                  </div>
                 </Col>
                 <Col>
                   <div className="displayitemsfromamount">
@@ -285,6 +305,7 @@ export const AuctionCard = ({ item }) => {
                                 bidPriceRef.current.value,
                                 bidAmountRef.current.value
                               )
+                              
                             }
                             className="btn btn-primary"
                           >

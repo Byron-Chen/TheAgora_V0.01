@@ -1,7 +1,8 @@
-import {Modal} from 'react-bootstrap'
+import {Modal, Row, Col} from 'react-bootstrap'
 import React, { useState, useContext} from 'react'
 import { AuthContext } from '../../context/AuthContext';
-import profileimg from '../../assets/profilepic4.png'
+import profileimg from '../../assets/profilepic4.png';
+import { useFirestore } from '../../hooks/useFirestore';
 
 export const ProfilePage = () => {
     const [showForm, setShowForm] = useState(false);
@@ -10,6 +11,16 @@ export const ProfilePage = () => {
 
     const openForm = () => setShowForm(true);
     const closeForm = () => setShowForm(false);
+    const { docs } = useFirestore("users");
+
+    const currentUserFriendsList = () => {
+      for (let i = 0; i < docs.length; i++) {
+          if (currentUser.email == docs[i].id){
+              return docs[i].friendsList;
+          }
+      }
+    }
+    
 
   return (
   <>
@@ -22,6 +33,21 @@ export const ProfilePage = () => {
           <img src={profileimg} alt="profilepic" height="100" />
                 <div>{currentUser.email}</div>
         <h3>Friends List</h3>
+        <div>
+            {currentUserFriendsList() && (
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {currentUserFriendsList().map((doc) => {
+                  return (
+                    <div key={doc} className="my-1">
+                      <Row>
+                        <Col>{doc}</Col>
+                      </Row>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </Modal.Body>
         <Modal.Footer>
         </Modal.Footer>
