@@ -12,8 +12,40 @@ export const AuthProvider = ({ children }) => {
         return authApp.signInWithEmailAndPassword(email, password);
     }
 
-    const register = (email, password) => {
+    const register = (email, password) => {    
         return authApp.createUserWithEmailAndPassword(email, password)
+    }
+
+    const addUsertoDb = (email) => {
+        const userDb = firestoreApp.collection('users')
+        userDb.doc(email).set({email, username: "test", friendsList: []})
+    }
+
+
+    const isFriend = (friend) =>{
+        const userDb = firestoreApp.collection('users')
+        const userRef = userDb.doc(currentUser.email)
+        return userRef.get().then((doc =>{
+            let friendsList = doc.data().friendsList || [];
+            for (let i = 0; i < friendsList.length; i++) {
+                if (friend == friendsList[i]){
+                    return true
+                }
+            }
+            return false
+        }))
+    }
+
+    const addFriend = (friendId) =>{
+        const userDb = firestoreApp.collection('users')
+        const userRef = userDb.doc(currentUser.email)
+        return userRef.get().then((doc)=>{
+            let friendsList = doc.data().friendsList || [];
+            friendsList.push(friendId)
+            return userRef.update({
+                friendsList: friendsList,
+            })
+        })
     }
 
     const logout = () => {
@@ -23,6 +55,20 @@ export const AuthProvider = ({ children }) => {
     const checkBid = () => {
         //check min bid maybe?
         return "b"
+    }
+
+    
+
+    const addComment = (auction, comment, email) =>{
+        const db = firestoreApp.collection('auctions');
+        const auctionRef = db.doc(auction.id);
+        return auctionRef.get().then((doc) => {
+            let commentList = doc.data().comment || [];
+            commentList.unshift({email: email, comment: comment})
+            return auctionRef.update({
+                comment: commentList,
+            })
+        })
     }
 
     const updateWinnerList = (auctionRef, email, price, amount, powerBuy = false) => {
@@ -146,7 +192,7 @@ export const AuthProvider = ({ children }) => {
     }, [globalMsg])
 
     return (
-        <AuthContext.Provider value={{ currentUser, register, login, logout, bidAuction, endAuction, addBid, checkBid, globalMsg }}>
+        <AuthContext.Provider value={{isFriend, addFriend, currentUser, register, addUsertoDb, login, logout, bidAuction, endAuction, addBid, checkBid, addComment, globalMsg }}>
             {!loading && children}
         </AuthContext.Provider>
     );
