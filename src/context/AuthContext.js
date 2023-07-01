@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         const userDb = firestoreApp.collection('users')
         const userRef = userDb.doc(currentUser.email)
         return userRef.get().then((doc) =>{
-            let friendsList = doc.data().friendsList || [];
+            let friendsList = doc.data().friendsList;
             for (let i = 0; i < friendsList.length; i++) {
                 if (friend == friendsList[i]){
                     return true

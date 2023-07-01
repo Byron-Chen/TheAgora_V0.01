@@ -210,8 +210,6 @@ export const AuctionCard = ({ item }) => {
                 <Col>
                   <h4>Details</h4>
                   <p>{item.desc}</p>
-                  <h4>Specifications</h4>
-                  <p>blablldf </p>
                   <h4>Comments</h4>
                   <form onSubmit={submitComment}>
                   <Form.Group>
@@ -367,8 +365,18 @@ export const AuctionCard = ({ item }) => {
             />
 
             <div className="card-body">
+              <div>
+                {props.item.hashTag && props.item.hashTag.map((item, index) => (
+                        <div key={index} >
+                          <p style={{ margin: "0", float: "left" }}>
+                            #{item} 
+                          </p>
+                        </div>
+                      ))}
+              </div>
+              
               <h3>
-                {props.item.title} X {props.item.amount}
+                <br></br>{props.item.title} X {props.item.amount}
               </h3>
 
               {completed ? (

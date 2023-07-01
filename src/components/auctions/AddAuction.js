@@ -13,6 +13,7 @@ export const AddAuction = ({ setAuction }) => {
   const itemAmount = useRef();
   const itemDuration = useRef();
   const itemImage = useRef();
+  const itemHashTag = useRef();
 
   const { currentUser } = useContext(AuthContext);
   const { docs } = useFirestore("users");
@@ -43,6 +44,9 @@ export const AddAuction = ({ setAuction }) => {
     let dueDate = currentDate.setHours(
       currentDate.getHours() + parseInt(itemDuration.current.value)
     );
+    
+
+    let hashtagsep = itemHashTag.current.value.split(/[,\s]+/);
 
     let newAuction = {
       email: currentUser.email,
@@ -57,6 +61,7 @@ export const AddAuction = ({ setAuction }) => {
       comments: [],
       currentWinnerAmount: 0,
       currentCatchupAmount: 0,
+      hashTag: hashtagsep,
       itemImage: itemImage.current.files[0],
     };
 
@@ -82,6 +87,14 @@ export const AddAuction = ({ setAuction }) => {
                 <Form.Group>
                   <Form.Label>Item Title</Form.Label>
                   <Form.Control type="text" required ref={itemTitle} />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>Item HashTag - Seperated by Comma</Form.Label>
+                  <Form.Control as="textarea" rows={1} required ref={itemHashTag} />
                 </Form.Group>
               </Col>
             </Row>
