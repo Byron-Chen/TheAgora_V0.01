@@ -59,6 +59,7 @@ export const AddAuction = ({ setAuction }) => {
       currentWinner: [],
       currentCatchup: [],
       comments: [],
+      allowedUsers: [],
       currentWinnerAmount: 0,
       currentCatchupAmount: 0,
       hashTag: hashtagsep,
@@ -150,7 +151,7 @@ export const AddAuction = ({ setAuction }) => {
             </Row>
             <Row>
               <Form.Group>
-                <div>Add Friends</div>
+                <div>Add Connections</div>
                 {currentUserFriendsList() &&
                   currentUserFriendsList().map((doc) => (
                     <div key={doc}>

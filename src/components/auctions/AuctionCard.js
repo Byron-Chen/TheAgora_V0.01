@@ -369,7 +369,7 @@ export const AuctionCard = ({ item }) => {
                 {props.item.hashTag && props.item.hashTag.map((item, index) => (
                         <div key={index} >
                           <p style={{ margin: "0", float: "left" }}>
-                            #{item} 
+                            #{item}
                           </p>
                         </div>
                       ))}
@@ -408,7 +408,7 @@ export const AuctionCard = ({ item }) => {
                                         </div>
                                     )}
                                 </div> */}
-                {completed ? (
+                {completed? (
                     <div style={{ display: "flex", flexDirection: "column" }}>
                         <h5>Winner</h5>
                     {props.item.bidsList && props.item.currentWinner.map((item, index) => (
