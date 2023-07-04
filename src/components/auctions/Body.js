@@ -24,7 +24,7 @@ export const AuctionBody = () => {
       let returnDocs = []
       for (let i = 0; i < docs.length; i++) {
         for (let j = 0; j < docs[i].hashTag.length; j++){
-          if (searchItem === docs[i].hashTag[j]){
+          if (searchItem.toLowerCase() === docs[i].hashTag[j]){
             returnDocs.push(docs[i])
           }
           

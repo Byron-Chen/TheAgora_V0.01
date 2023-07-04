@@ -6,13 +6,20 @@ import { useFirestore } from "../../hooks/useFirestore";
 export const AddFriends = () => {
   const [showForm, setShowForm] = useState(false);
 
-  const {isFriend, addFriend} = useContext(AuthContext);
+  const {isFriend, addFriend, currentUser} = useContext(AuthContext);
 
   const openForm = () => setShowForm(true);
   const closeForm = () => setShowForm(false);
   const { docs } = useFirestore("users");
+  const checkList = currentUser.friendsList
  
-  
+  const friendsNotInCurrent = () =>{
+    let flist = []
+    let checkList = currentUser.friendsList
+    for (let i = 0; i < docs.length; i++) {
+      
+    }
+  }
 
   const friendsClick = (userDoc) => {
     isFriend(userDoc.id).then(
@@ -28,11 +35,11 @@ export const AddFriends = () => {
   return (
     <>
       <div onClick={openForm} className="btn btn-primary mx-2">
-        Add Friends
+        Add Connections
       </div>
       <Modal centered show={showForm} onHide={closeForm}>
         <Modal.Header>
-          <Modal.Title>Find Friends</Modal.Title>
+          <Modal.Title>Find Connections</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
