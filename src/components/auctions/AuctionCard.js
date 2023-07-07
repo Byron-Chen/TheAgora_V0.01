@@ -85,7 +85,7 @@ export const AuctionCard = ({ item }) => {
 
   const rndColor = (email) => {
     const hash = md5(email);
-    const hashSlice = hash.slice(0, 6); // Take the first 6 characters of the hash
+    const hashSlice = hash.slice(0, 6);
     const hashNum = parseInt(hashSlice, 16);
     const index = hashNum % colours.length;
 
@@ -113,8 +113,6 @@ export const AuctionCard = ({ item }) => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    // Perform form submission logic here
-    // Reset form inputs after submission
     setFormData({
       priceForm: "",
       amountForm: "",
@@ -128,7 +126,7 @@ export const AuctionCard = ({ item }) => {
     for (let i = 0; i < list.length; i++) {
       const { email, amount } = list[i];
 
-      const color = rndColor(email); // Get the random color based on email
+      const color = rndColor(email); 
 
       for (let j = 0; j < amount; j++) {
         const boxKey = `box-${boxCounter}`;
@@ -137,7 +135,7 @@ export const AuctionCard = ({ item }) => {
           <div
             key={boxKey}
             className="amount-box"
-            style={{ backgroundColor: color }} // Assign the random color as the background color
+            style={{ backgroundColor: color }} 
           ></div>
         );
 
@@ -150,7 +148,7 @@ export const AuctionCard = ({ item }) => {
         <div
           key={boxKey}
           className="amount-box"
-          style={{ backgroundColor: "#808080" }} // Assign the random color as the background color
+          style={{ backgroundColor: "#808080" }} 
         ></div>
       );
       boxCounter++;
@@ -365,7 +363,7 @@ export const AuctionCard = ({ item }) => {
             />
 
             <div className="card-body">
-              <div>
+              <div className="">
                 {props.item.hashTag && props.item.hashTag.map((item, index) => (
                         <div key={index} >
                           <p style={{ margin: "0", float: "left" }}>
@@ -374,43 +372,25 @@ export const AuctionCard = ({ item }) => {
                         </div>
                       ))}
               </div>
-              
-              <h3>
-                <br></br>{props.item.title} X {props.item.amount}
-              </h3>
+              <br></br>
+              <h4 className="my-0">
+                {props.item.title} X {props.item.amount}
+              </h4>
 
               {completed ? (
-                <h5>Completed</h5>
+                <h5 className="my-1">Completed</h5>
               ) : (
                 <div className="d-flex justify-content-between align-item-center">
-                  <h5>
+                  <h5 className="my-1">
                     {days * 24 + hours} hr: {minutes} min: {seconds} sec
                   </h5>
                 </div>
               )}
-              <p className="card-text">{props.item.desc}</p>
+              <p className="card-text my-0">{(props.item.desc).substring(0, 43) + "..."}</p>
               <div className="d-flex justify-content-between align-item-center">
-                {/* <div>
-                                    current bid amount left 3
-                                    {!props.owner ? (
-                                        <div onClick={() => props.bidAuction()}
-                                            className="btn btn-primary">Bid</div>
-                                    ) : props.owner.email === props.item.email ? (
-                                        <div
-                                            onClick={() => props.endAuction(props.item.id)}
-                                            className="btn btn-primary">Cancel Auction</div>
-                                    ) : props.owner.email === props.item.curWinner ? (
-                                        <p className="display-6">Winner</p>
-                                    ) : (
-                                        <div
-                                            onClick={() => props.bidAuction(props.item.id, props.item.curPrice)}
-                                            className="btn btn-primary">Bid
-                                        </div>
-                                    )}
-                                </div> */}
                 {completed? (
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                        <h5>Winner</h5>
+                        <h5 className="my-1">Winner</h5>
                     {props.item.bidsList && props.item.currentWinner.map((item, index) => (
                         <div key={index} >
                           <p style={{ margin: "0", float: "left" }}>
@@ -421,7 +401,7 @@ export const AuctionCard = ({ item }) => {
                       </div>
                     
                 ):(
-                    <h5>Highest Bid: ${props.item.curPrice}</h5>
+                    <h5 className="my-1">Highest Bid: ${props.item.curPrice}</h5>
                 )}
                 
               </div>

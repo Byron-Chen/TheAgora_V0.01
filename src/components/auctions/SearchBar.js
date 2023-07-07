@@ -1,4 +1,4 @@
-import React, { useEffect , useRef} from "react";
+import React, { useRef} from "react";
 import {InputGroup, Form, Button} from 'react-bootstrap'
 
 export const SearchBar = ({setSearchItem}) => {
