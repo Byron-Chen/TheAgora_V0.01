@@ -45,6 +45,15 @@ export const AddAuction = ({ setAuction }) => {
       currentDate.getHours() + parseInt(itemDuration.current.value)
     );
     
+    let getAllowedUserList = document.getElementsByClassName("form-check-input")
+    let allowedUserList = []
+    for (let i = 0; i < getAllowedUserList.length; i++) {
+      if (getAllowedUserList[i].checked){
+        allowedUserList.push(getAllowedUserList[i].id.split("check")[1])
+      }
+      
+    }
+    
 
     let hashtagsep = itemHashTag.current.value.split(/[,\s]+/);
 
@@ -59,7 +68,7 @@ export const AddAuction = ({ setAuction }) => {
       currentWinner: [],
       currentCatchup: [],
       comments: [],
-      allowedUsers: [],
+      allowedUsers: allowedUserList,
       currentWinnerAmount: 0,
       currentCatchupAmount: 0,
       hashTag: hashtagsep,
