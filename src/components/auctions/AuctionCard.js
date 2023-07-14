@@ -209,14 +209,16 @@ export const AuctionCard = ({ item }) => {
                   <h4>Details</h4>
                   <p>{item.desc}</p>
                   <h4>Comments</h4>
-                  <form onSubmit={submitComment}>
+
+                  {currentUser ? ( <form onSubmit={submitComment}>
                   <Form.Group>
                     <Col>
                       <Form.Control as="textarea" rows={1}  required ref={auctionComment} />
                       <Button variant='primary' type="submit">Submit</Button>
                     </Col>
                   </Form.Group>
-                  </form>
+                  </form>) : (<p></p>)}
+                  {}
                   <div style={{ display: "flex", flexDirection: "column" }}>
                   {props.item.comment &&
                           props.item.comment.map((item, index) => (
@@ -261,7 +263,7 @@ export const AuctionCard = ({ item }) => {
                       </div>
                     </Card.Body>
                   </Card>
-                  {!completed? (
+                  {!completed && currentUser? (
                     <Card
                       style={{
                         width: "100%",
@@ -312,8 +314,9 @@ export const AuctionCard = ({ item }) => {
                     </Card>
                   ) : (
                     <h5 className="d-flex justify-content-center mt-1">
-                      Bids Finished
+                      
                     </h5>
+
                   )}
                   <Card
                     style={{

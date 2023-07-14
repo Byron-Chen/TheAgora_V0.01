@@ -5,7 +5,7 @@ import { RegisterComp } from './RegisterComp'
 import {ProfilePage} from './ProfilePage'
 import { AddFriends } from './AddFriends'
 import { AuthContext } from '../../context/AuthContext'
-
+import { Outlet, Link } from 'react-router-dom';
 
 
 export const NavComp = () => {
@@ -13,7 +13,7 @@ export const NavComp = () => {
   return (
   <nav className='navbar sticky-top navbar-light bg-black'>
     <div className="container-fluid">
-      <div className="navbar-brand"><img src={logoimg} alt="logo" height="75" /></div>
+      <div className="navbar-brand"><Link to="/"><img src={logoimg} alt="logo" height="75" /></Link></div>
       <div className="d-flex">
         <div className="col">
           {currentUser ? (
@@ -33,6 +33,7 @@ export const NavComp = () => {
         </div>
       </div>
     </div>
+    <Outlet />
   </nav>
   )
 }

@@ -7,6 +7,8 @@ import { AuctionCard } from './AuctionCard';
 import { SearchBar} from './SearchBar';
 import { Alert } from 'react-bootstrap';
 
+
+
 export const AuctionBody = () => {
     const [auction, setAuction] = useState(null);
     const [searchItem, setSearchItem] = useState("")

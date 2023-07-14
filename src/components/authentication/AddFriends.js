@@ -54,6 +54,7 @@ export const AddFriends = () => {
                           <Button
                             onClick={(e) => {
                               e.preventDefault();
+                              console.log(isFriend(doc.id));
                               friendsClick(doc);
                             }}
                             className="btn btn-primary mx-2 "
