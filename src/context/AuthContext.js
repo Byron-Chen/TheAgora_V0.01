@@ -70,27 +70,39 @@ export const AuthProvider = ({ children }) => {
             })
         })
     }
+    //new
+    
 
-    const updateWinnerList = (auctionRef, email, price, amount, powerBuy = false) => {
+    const updateWinnerList = (auctionRef, email, price, amount, date, powerBuy = false) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
             let currentWinnerAmount = parseFloat(doc.data().currentWinnerAmount)
-            const winnerObject = { email: email, amount: amount, price: price}
+            const winnerObject = { email: email, amount: amount, price: price, date: date }
             //auto add no checks
             if (powerBuy) {
-                winnerList = [{ email: email, amount: amount, price: price }]
+                winnerList = [winnerObject]
             } else {
                 //read through list to determine ifit can fit
                 //price > time > amount
                 if (winnerList.length !== 0) {
                     if (parseFloat(doc.data().currentWinnerAmount) + parseFloat(amount) <= parseFloat(doc.data().amount)) {
                         for (let i = 0; i < winnerList.length; i++) {
-                            if (winnerList[i].price < price) {
-                                winnerList.splice(i, 0, winnerObject);
-                                break
+                            if (price > winnerList[i].price) {
+                                if(winnerList[i].amount >= amount){
+                                    winnerList.splice(i, 0, winnerObject);
+                                    console.log("poop")
+                                    break
+                                }
                             } else if (winnerList[i].price == price) {
-                                winnerList.push(winnerObject);
-                                break
+                                if(amount < winnerList[i].amount){
+                                    winnerList.splice(i, 0, winnerObject);
+                                    console.log("poop")
+                                    break
+                                }else if (amount >= winnerList[i].amount){
+                                    console.log(amount , winnerList[i].amount, "bigger")
+                                    winnerList.splice(i, 0, winnerObject);
+                                    break
+                                }
                             }
                         }
                         //winnerList.push(winnerObject)
@@ -99,8 +111,10 @@ export const AuthProvider = ({ children }) => {
                         //check price higher then add to winnerlist
                         for (let i = 0; i < winnerList.length; i++) {
                             if (parseFloat(price) > parseFloat(winnerList[i].price) ) {
-                                winnerList.splice(i, 0, winnerObject);
-                                break
+                                if (parseFloat(amount) < parseFloat(winnerList[i].amount))
+                                    winnerList.splice(i, 0, winnerObject);
+                                    console.log("poopa")
+                                    break
                             }else if (i == winnerList.length -1){
                                 //or this
                                 winnerList.push(winnerObject)
@@ -115,12 +129,12 @@ export const AuthProvider = ({ children }) => {
 
                 if (currentWinnerAmount > parseFloat(doc.data().amount)){
                     let i = winnerList.length - 1
+                    console.log(currentWinnerAmount, doc.data().amount, i, winnerList[i].amount)
                     while( currentWinnerAmount - parseFloat(doc.data().amount) > 0){
                         if (winnerList[i].amount <= currentWinnerAmount - parseFloat(doc.data().amount)){
                             currentWinnerAmount -= winnerList[i].amount
                             winnerList.splice(i, 1)
                         } else {
-                            
                             winnerList[i].amount -= (currentWinnerAmount - parseFloat(doc.data().amount))
                             currentWinnerAmount = parseFloat(doc.data().amount)
                         }
@@ -143,12 +157,15 @@ export const AuthProvider = ({ children }) => {
         const db = firestoreApp.collection('auctions');
         const auctionRef = db.doc(auctionId);
 
+        //console.log(auctionRef.get())
+
         return auctionRef.get().then((doc) => {
             const bidsList = doc.data().bidsList || [];
 
             if (parseFloat(price) >= parseFloat(doc.data().curPrice) && parseFloat(amount) <= parseFloat(doc.data().amount)) {
-                bidsList.unshift({ email: email, amount: amount, price: price });
-                updateWinnerList(auctionRef, email, price, amount)
+                let currentDate = new Date();
+                bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate});
+                updateWinnerList(auctionRef, email, price, amount, currentDate)
 
                 return auctionRef.update({
                     bidsList: bidsList,
@@ -162,10 +179,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     const bidAuction = (auctionId, price) => {
-        if (!currentUser) {
-            return setGlobalMsg("Please Login First")
-        }
-        let newPrice = ((price / 100) * 110).toFixed(2);
+        //if (!currentUser) {
+        //    return setGlobalMsg("Please Login First")
+        //}
+        let newPrice = 0//((price / 100) * 110).toFixed(2);
         const db = firestoreApp.collection('auctions');
 
         return db.doc(auctionId).update({
