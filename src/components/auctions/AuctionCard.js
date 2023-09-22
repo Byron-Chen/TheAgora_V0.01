@@ -268,10 +268,7 @@ export const AuctionCard = ({ item }) => {
                               <p style={{ margin: "0", float: "right" }}>
                                 {item.email}
                               </p>
-                              <p style={{ margin: "0", float: "right" }}>
-                                {item.date.toString()}
-                              </p>
-
+                              
                             </div>
                           ))}
                       </div>
@@ -286,6 +283,12 @@ export const AuctionCard = ({ item }) => {
                       }}
                     >
                       <Card.Body className="justify-content-center">
+                        <Row xs="auto">
+                        {/* <div style={{ textAlign: "center" }}>
+                          {props.item.minimumBidAmount} at {props.item.minimumBid}
+                        </div> */}
+                          
+                        </Row>
                         <Row xs="auto">
                           <Col xs={5}>
                             <Form.Control
@@ -322,6 +325,21 @@ export const AuctionCard = ({ item }) => {
                             className="btn btn-primary"
                           >
                             Place Bid
+                          </div>
+                          <div
+                            onClick={() =>
+                              props.addBid(
+                                props.item.id,
+                                props.owner.email,
+                                bidPriceRef.current.value,
+                                bidAmountRef.current.value,
+                                true
+                              )
+                              
+                            }
+                            className="btn btn-primary"
+                          >
+                            Power Buy
                           </div>
                         </div>
                       </Card.Body>
