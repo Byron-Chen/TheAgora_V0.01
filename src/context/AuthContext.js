@@ -116,21 +116,21 @@ export const AuthProvider = ({ children }) => {
                 currentCatchupList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
                 currentCatchupAmount += parseFloat(amount)
 
-                if (currentCatchupAmount > parseFloat(doc.data().amount)){
-                    let i = currentCatchupList.length - 1
-                    while( currentCatchupAmount - parseFloat(doc.data().amount) > 0){
-                        if (currentCatchupList[i].amount <= currentCatchupAmount - parseFloat(doc.data().amount)){
-                            currentCatchupAmount -= currentCatchupList[i].amount
-                            currentCatchupList.splice(i, 1)
-                        } else {
+                // if (currentCatchupAmount > parseFloat(doc.data().amount)){
+                //     let i = currentCatchupList.length - 1
+                //     while( currentCatchupAmount - parseFloat(doc.data().amount) > 0){
+                //         if (currentCatchupList[i].amount <= currentCatchupAmount - parseFloat(doc.data().amount)){
+                //             currentCatchupAmount -= currentCatchupList[i].amount
+                //             currentCatchupList.splice(i, 1)
+                //         } else {
                             
-                            currentCatchupList[i].amount -= (currentCatchupAmount - parseFloat(doc.data().amount))
-                            currentCatchupAmount = parseFloat(doc.data().amount)
-                        }
-                        currentCatchupList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
-                        i -= 1
-                    }
-                }
+                //             currentCatchupList[i].amount -= (currentCatchupAmount - parseFloat(doc.data().amount))
+                //             currentCatchupAmount = parseFloat(doc.data().amount)
+                //         }
+                //         currentCatchupList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
+                //         i -= 1
+                //     }
+                // }
                 if (currentCatchupAmount == parseFloat(doc.data().amount)){
                     powerBuyActive = false
                     winnerList = currentCatchupList
@@ -141,7 +141,7 @@ export const AuthProvider = ({ children }) => {
                 //read through list to determine ifit can fit
                 winnerList.push(winnerObject)
 
-                winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
+                winnerList.sort((a,b) => parseFloat(b.price) - parseFloat(a.price) || a.amount - b.amount ||a.date - b.date)
                 currentWinnerAmount += parseFloat(amount)
 
                 if (currentWinnerAmount > parseFloat(doc.data().amount)){
@@ -151,7 +151,6 @@ export const AuthProvider = ({ children }) => {
                             currentWinnerAmount -= winnerList[i].amount
                             winnerList.splice(i, 1)
                         } else {
-                            
                             winnerList[i].amount -= (currentWinnerAmount - parseFloat(doc.data().amount))
                             currentWinnerAmount = parseFloat(doc.data().amount)
                         }
@@ -185,7 +184,7 @@ export const AuthProvider = ({ children }) => {
         return auctionRef.get().then((doc) => {
             const bidsList = doc.data().bidsList || [];
             let currentDate = new Date();
-            if (parseFloat(price) >= parseFloat(doc.data().curPrice) && parseFloat(amount) <= parseFloat(doc.data().amount)) {
+            if (parseFloat(price) >= parseFloat(doc.data().minimumBid) && parseFloat(amount) <= parseFloat(doc.data().amount)) {
                 if (powerBuy){
                     //check if amount over certain increment
                     if (parseFloat(price) >= (parseFloat(doc.data().curPrice) + parseFloat(doc.data().minBidIncrement)) && parseFloat(amount) == parseFloat(doc.data().amount)){
