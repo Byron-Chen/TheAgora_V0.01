@@ -268,7 +268,10 @@ export const AuctionCard = ({ item }) => {
                               <p style={{ margin: "0", float: "right" }}>
                                 {item.email}
                               </p>
-                              
+                              <p style={{ margin: "0", float: "right" }}>
+                                {item.date.toString()}
+                              </p>
+
                             </div>
                           ))}
                       </div>
