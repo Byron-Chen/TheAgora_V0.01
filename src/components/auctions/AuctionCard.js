@@ -157,6 +157,13 @@ export const AuctionCard = ({ item }) => {
     return <div className="amount-row">{boxes}</div>;
   };
 
+  const toDateTime = (secs)=>{
+    var t = new Date(1970, 0, 1); 
+    t.setSeconds(secs);
+    let rt = t.toString().split(" ")
+    return "-" + rt[4] + " " + rt[2] + " " + rt[1] + " ";
+}
+
   const submitComment = async(e) => {
     e.preventDefault();
     //addComment(item, )
@@ -256,11 +263,12 @@ export const AuctionCard = ({ item }) => {
                                 {item.amount} x ${item.price}
                               </p>
                               <p style={{ margin: "0", float: "right" }}>
-                                {item.email}
+                                {toDateTime(item.date.seconds).toString()}
                               </p>
                               <p style={{ margin: "0", float: "right" }}>
-                                -{item.date.minutes}-
+                                {item.email}
                               </p>
+                              
                             </div>
                           ))}
                       </div>

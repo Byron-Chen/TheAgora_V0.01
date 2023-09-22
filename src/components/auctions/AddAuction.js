@@ -63,6 +63,8 @@ export const AddAuction = ({ setAuction }) => {
       desc: itemDesc.current.value,
       curPrice: startPrice.current.value,
       amount: itemAmount.current.value,
+      lowestBid: 0,
+      lowestAmount:0,
       duration: dueDate,
       bidsList: [],
       currentWinner: [],

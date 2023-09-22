@@ -84,6 +84,8 @@ export const AuthProvider = ({ children }) => {
         return minPrice
     }
 
+    
+
     const updateWinnerList = (auctionRef, email, price, amount, date, powerBuy = false) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
@@ -92,7 +94,7 @@ export const AuthProvider = ({ children }) => {
 
             
             let minPrice = findMinPrice(winnerList)
-            console.log(minPrice)
+            //console.log(minPrice)
 
             //auto add no checks
             if (powerBuy) {
@@ -100,11 +102,11 @@ export const AuthProvider = ({ children }) => {
             } else {    
                 //read through list to determine ifit can fit
                 winnerList.push(winnerObject)
-                
-                
+
+
 
                 winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
-                //console.log(winnerList)
+                console.log(winnerList)
                 currentWinnerAmount += parseFloat(amount)
 
                 if (currentWinnerAmount > parseFloat(doc.data().amount)){
