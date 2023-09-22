@@ -239,10 +239,13 @@ export const AuctionCard = ({ item }) => {
                 </Col>
                 <Col>
                   <div className="displayitemsfromamount">
-                    {renderAmountBoxes(
+                    {props.item.powerBuyActive ? (renderAmountBoxes(
+                      props.item.amount,
+                      props.item.currentCatchup
+                    )) : (renderAmountBoxes(
                       props.item.amount,
                       props.item.currentWinner
-                    )}
+                    ))}
                   </div>
                   <Card
                     style={{
@@ -274,6 +277,38 @@ export const AuctionCard = ({ item }) => {
                       </div>
                     </Card.Body>
                   </Card>
+                  {props.item.powerBuyActive ? (
+                  <Card
+                    style={{
+                      width: "100%",
+                      boxShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <Card.Body className="justify-content-center">
+                      <Card.Title className="text-center">
+                        Current Catchup 
+                      </Card.Title>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        {props.item.currentCatchup &&
+                          props.item.currentCatchup.map((item, index) => (
+                            <div key={index}>
+                              <p style={{ margin: "0", float: "left" }}>
+                                {item.amount} x ${item.price}
+                              </p>
+                              <p style={{ margin: "0", float: "right" }}>
+                                {toDateTime(item.date.seconds).toString()}
+                              </p>
+                              <p style={{ margin: "0", float: "right" }}>
+                                {item.email}
+                              </p>
+                              
+                            </div>
+                          ))}
+                      </div>
+                    </Card.Body>
+                  </Card>): (<div></div>)}
+                  
                   {!completed && currentUser? (
                     <Card
                       style={{
@@ -339,7 +374,7 @@ export const AuctionCard = ({ item }) => {
                             }
                             className="btn btn-success"
                           >
-                            Power Buy
+                            Power Bid
                           </div>
                         </div>
                       </Card.Body>

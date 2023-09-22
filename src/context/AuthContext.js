@@ -101,11 +101,42 @@ export const AuthProvider = ({ children }) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
             let currentWinnerAmount = parseFloat(doc.data().currentWinnerAmount)
+
+            let powerBuyActive = doc.data().powerBuyActive  
+            let currentCatchupList = doc.data().currentCatchup || [];
+            let currentCatchupAmount = parseFloat(doc.data().currentCatchupAmount)
             const winnerObject = { email: email, amount: amount, price: price, date:date}
 
             //auto add no checks
             if (powerBuy) {
+                powerBuyActive = true
                 winnerList = [winnerObject]
+            }else if(powerBuyActive){
+                currentCatchupList.push(winnerObject)
+                currentCatchupList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
+                currentCatchupAmount += parseFloat(amount)
+
+                if (currentCatchupAmount > parseFloat(doc.data().amount)){
+                    let i = currentCatchupList.length - 1
+                    while( currentCatchupAmount - parseFloat(doc.data().amount) > 0){
+                        if (currentCatchupList[i].amount <= currentCatchupAmount - parseFloat(doc.data().amount)){
+                            currentCatchupAmount -= currentCatchupList[i].amount
+                            currentCatchupList.splice(i, 1)
+                        } else {
+                            
+                            currentCatchupList[i].amount -= (currentCatchupAmount - parseFloat(doc.data().amount))
+                            currentCatchupAmount = parseFloat(doc.data().amount)
+                        }
+                        currentCatchupList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
+                        i -= 1
+                    }
+                }
+                if (currentCatchupAmount == parseFloat(doc.data().amount)){
+                    powerBuyActive = false
+                    winnerList = currentCatchupList
+                    currentCatchupList = []
+                    currentCatchupAmount = 0
+                }
             } else {    
                 //read through list to determine ifit can fit
                 winnerList.push(winnerObject)
@@ -137,9 +168,12 @@ export const AuthProvider = ({ children }) => {
             return auctionRef.update({
                 currentWinner: winnerList,
                 currentWinnerAmount: currentWinnerAmount,
+                currentCatchup: currentCatchupList,
+                currentCatchupAmount: currentCatchupAmount,
                 curPrice: price,
                 minimumBidAmount: minPriceAmount,
                 minimumBid: minPrice,
+                powerBuyActive: powerBuyActive,
             })
         })
     }
