@@ -258,6 +258,9 @@ export const AuctionCard = ({ item }) => {
                               <p style={{ margin: "0", float: "right" }}>
                                 {item.email}
                               </p>
+                              <p style={{ margin: "0", float: "right" }}>
+                                -{item.date.minutes}-
+                              </p>
                             </div>
                           ))}
                       </div>
@@ -339,6 +342,7 @@ export const AuctionCard = ({ item }) => {
                               <p style={{ margin: "0", float: "right" }}>
                                 {item.email}
                               </p>
+                              
                             </div>
                           ))}
                       </div>

@@ -84,11 +84,11 @@ export const AuthProvider = ({ children }) => {
         return minPrice
     }
 
-    const updateWinnerList = (auctionRef, email, price, amount, powerBuy = false) => {
+    const updateWinnerList = (auctionRef, email, price, amount, date, powerBuy = false) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
             let currentWinnerAmount = parseFloat(doc.data().currentWinnerAmount)
-            const winnerObject = { email: email, amount: amount, price: price}
+            const winnerObject = { email: email, amount: amount, price: price, date:date}
 
             
             let minPrice = findMinPrice(winnerList)
@@ -96,39 +96,15 @@ export const AuthProvider = ({ children }) => {
 
             //auto add no checks
             if (powerBuy) {
-                winnerList = [{ email: email, amount: amount, price: price }]
+                winnerList = [winnerObject]
             } else {    
                 //read through list to determine ifit can fit
-                //price > time > amount
-                if (winnerList.length !== 0) {
-                    if (parseFloat(doc.data().currentWinnerAmount) + parseFloat(amount) <= parseFloat(doc.data().amount)) {
-                        //for (let i = 0; i < winnerList.length; i++) {
-                          //  if (winnerList[i].price < price) {
-                            //    winnerList.splice(i, 0, winnerObject);
-                              //  break
-                            //} else if (winnerList[i].price == price) {
-                                winnerList.push(winnerObject);
-                                //break
-                            //}
-                        //}
-                        //winnerList.push(winnerObject)
-                        //currentWinnerAmount += parseFloat(amount)
-                    } else if (parseFloat(price) >= parseFloat(doc.data().curPrice)){
-                        //check price higher then add to winnerlist
-                        for (let i = 0; i < winnerList.length; i++) {
-                            if (parseFloat(price) > parseFloat(winnerList[i].price) ) {
-                                winnerList.splice(i, 0, winnerObject);
-                                break
-                            }else if (i == winnerList.length -1){
-                                //or this
-                                winnerList.push(winnerObject)
-                                break
-                            }
-                        }
-                    }
-                } else {
-                    winnerList.push(winnerObject)
-                }
+                winnerList.push(winnerObject)
+                
+                
+
+                winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
+                //console.log(winnerList)
                 currentWinnerAmount += parseFloat(amount)
 
                 if (currentWinnerAmount > parseFloat(doc.data().amount)){
@@ -142,6 +118,7 @@ export const AuthProvider = ({ children }) => {
                             winnerList[i].amount -= (currentWinnerAmount - parseFloat(doc.data().amount))
                             currentWinnerAmount = parseFloat(doc.data().amount)
                         }
+                        winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
 
                         i -= 1
                     }
@@ -163,14 +140,13 @@ export const AuthProvider = ({ children }) => {
         const db = firestoreApp.collection('auctions');
         const auctionRef = db.doc(auctionId);
 
-        let currentDate = new Date();
-
         return auctionRef.get().then((doc) => {
             const bidsList = doc.data().bidsList || [];
 
             if (parseFloat(price) >= parseFloat(doc.data().curPrice) && parseFloat(amount) <= parseFloat(doc.data().amount)) {
-                bidsList.unshift({ email: email, amount: amount, price: price });
-                updateWinnerList(auctionRef, email, price, amount)
+                let currentDate = new Date();
+                bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate });
+                updateWinnerList(auctionRef, email, price, amount,  currentDate)
 
                 return auctionRef.update({
                     bidsList: bidsList,
