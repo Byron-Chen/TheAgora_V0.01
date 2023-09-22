@@ -71,23 +71,42 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
+    const findMinPrice = (list) => {
+        if (list.length == 0){
+            return 0
+        }
+        let minPrice = list[0].price
+            for (let k = 0; k < list.length; k++) {
+                if (list[k].price < minPrice){
+                    minPrice = list[k].price
+                }
+            }
+        return minPrice
+    }
+
 
     const updateWinnerList = (auctionRef, email, price, amount, date, powerBuy = false) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
             let currentWinnerAmount = parseFloat(doc.data().currentWinnerAmount)
-            const winnerObject = { email: email, amount: amount, price: price, date: date }
+
+            const winnerObject = { email: email, amount: amount, price: price, date:date}
+
+            
+            let minPrice = findMinPrice(winnerList)
+            //console.log(minPrice)
+
             //auto add no checks
             if (powerBuy) {
                 winnerList = [winnerObject]
-            } else {
-                if (winnerList.length !== 0) {
-                    winnerList.push(winnerObject)
-                }
-                //sortlist by price then time
-                winnerList.sort((a,b) => b.price - a.price || a.date - b.date)
+            } else {    
+                //read through list to determine ifit can fit
+                winnerList.push(winnerObject)
 
-                //then split 
+
+
+                winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
+                console.log(winnerList)
                 currentWinnerAmount += parseFloat(amount)
 
                 if (currentWinnerAmount > parseFloat(doc.data().amount)){
@@ -101,6 +120,7 @@ export const AuthProvider = ({ children }) => {
                             winnerList[i].amount -= (currentWinnerAmount - parseFloat(doc.data().amount))
                             currentWinnerAmount = parseFloat(doc.data().amount)
                         }
+                        winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
 
                         i -= 1
                     }
@@ -108,10 +128,12 @@ export const AuthProvider = ({ children }) => {
 
                 //check if over amount
             }
+           
+
             return auctionRef.update({
                 currentWinner: winnerList,
                 currentWinnerAmount: currentWinnerAmount,
-                curPrice: price,
+                curPrice: minPrice,
             })
         })
     }
@@ -127,8 +149,10 @@ export const AuthProvider = ({ children }) => {
 
             if (parseFloat(price) >= parseFloat(doc.data().curPrice) && parseFloat(amount) <= parseFloat(doc.data().amount)) {
                 let currentDate = new Date();
+              
                 bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate});
                 updateWinnerList(auctionRef, email, price, amount, currentDate)
+
 
                 return auctionRef.update({
                     bidsList: bidsList,
