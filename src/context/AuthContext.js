@@ -71,28 +71,46 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
+    const findMinPrice = (list) => {
+        if (list.length == 0){
+            return 0
+        }
+        let minPrice = list[0].price
+            for (let k = 0; k < list.length; k++) {
+                if (list[k].price < minPrice){
+                    minPrice = list[k].price
+                }
+            }
+        return minPrice
+    }
+
     const updateWinnerList = (auctionRef, email, price, amount, powerBuy = false) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
             let currentWinnerAmount = parseFloat(doc.data().currentWinnerAmount)
             const winnerObject = { email: email, amount: amount, price: price}
+
+            
+            let minPrice = findMinPrice(winnerList)
+            console.log(minPrice)
+
             //auto add no checks
             if (powerBuy) {
                 winnerList = [{ email: email, amount: amount, price: price }]
-            } else {
+            } else {    
                 //read through list to determine ifit can fit
                 //price > time > amount
                 if (winnerList.length !== 0) {
                     if (parseFloat(doc.data().currentWinnerAmount) + parseFloat(amount) <= parseFloat(doc.data().amount)) {
-                        for (let i = 0; i < winnerList.length; i++) {
-                            if (winnerList[i].price < price) {
-                                winnerList.splice(i, 0, winnerObject);
-                                break
-                            } else if (winnerList[i].price == price) {
+                        //for (let i = 0; i < winnerList.length; i++) {
+                          //  if (winnerList[i].price < price) {
+                            //    winnerList.splice(i, 0, winnerObject);
+                              //  break
+                            //} else if (winnerList[i].price == price) {
                                 winnerList.push(winnerObject);
-                                break
-                            }
-                        }
+                                //break
+                            //}
+                        //}
                         //winnerList.push(winnerObject)
                         //currentWinnerAmount += parseFloat(amount)
                     } else if (parseFloat(price) >= parseFloat(doc.data().curPrice)){
@@ -131,10 +149,12 @@ export const AuthProvider = ({ children }) => {
 
                 //check if over amount
             }
+           
+
             return auctionRef.update({
                 currentWinner: winnerList,
                 currentWinnerAmount: currentWinnerAmount,
-                curPrice: price,
+                curPrice: minPrice,
             })
         })
     }
@@ -142,6 +162,8 @@ export const AuthProvider = ({ children }) => {
     const addBid = (auctionId, email, price, amount) => {
         const db = firestoreApp.collection('auctions');
         const auctionRef = db.doc(auctionId);
+
+        let currentDate = new Date();
 
         return auctionRef.get().then((doc) => {
             const bidsList = doc.data().bidsList || [];
