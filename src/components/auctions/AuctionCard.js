@@ -311,7 +311,7 @@ export const AuctionCard = ({ item }) => {
                             />
                           </Col>
                         </Row>
-                        <div className="d-flex justify-content-center mt-1">
+                        <div className="d-flex justify-content-center mt-1 mx-2">
                           <div
                             onClick={() =>
                               props.addBid(
@@ -337,7 +337,7 @@ export const AuctionCard = ({ item }) => {
                               )
                               
                             }
-                            className="btn btn-primary"
+                            className="btn btn-success"
                           >
                             Power Buy
                           </div>
