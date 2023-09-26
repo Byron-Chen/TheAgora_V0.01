@@ -138,7 +138,8 @@ export const AuthProvider = ({ children }) => {
                     currentCatchupAmount = 0
                 }
             } else {    
-                //read through list to determine ifit can fit
+                //read through list to determine if it can fit
+
                 winnerList.push(winnerObject)
 
                 winnerList.sort((a,b) => parseFloat(b.price) - parseFloat(a.price) || a.amount - b.amount ||a.date - b.date)
@@ -184,19 +185,25 @@ export const AuthProvider = ({ children }) => {
         return auctionRef.get().then((doc) => {
             const bidsList = doc.data().bidsList || [];
             let currentDate = new Date();
+            //if (parseFloat(doc.data().amount) == parseFloat(doc.data().currentWWinnerAmount))
             if (parseFloat(price) >= parseFloat(doc.data().minimumBid) && parseFloat(amount) <= parseFloat(doc.data().amount)) {
                 if (powerBuy){
                     //check if amount over certain increment
                     if (parseFloat(price) >= (parseFloat(doc.data().curPrice) + parseFloat(doc.data().minBidIncrement)) && parseFloat(amount) == parseFloat(doc.data().amount)){
                         bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate });
-                        updateWinnerList(auctionRef, email, price, amount,  currentDate, powerBuy)
+                        updateWinnerList(auctionRef, email, price, amount, currentDate, powerBuy)
                     }else{
                         alert("Powerbid Failed. Make sure max amount and check price")
                     }
                     
-                }else {
-                    bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate });
-                    updateWinnerList(auctionRef, email, price, amount,  currentDate)
+                }else{
+                    if (parseFloat(price) == parseFloat(doc.data().minimumBid) && parseFloat(doc.data().amount) == parseFloat(doc.data().currentWinnerAmount)){
+                        alert("Check bid price/amount correct")
+                    }else{
+                        bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate });
+                        updateWinnerList(auctionRef, email, price, amount,  currentDate)
+                    }
+             
                 }
                 return auctionRef.update({
                     bidsList: bidsList,
