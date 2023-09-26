@@ -345,6 +345,13 @@ export const AuctionCard = ({ item }) => {
                               ref={bidPriceRef}
                             />
                           </Col>
+                          <Col >
+                          <Form.Check
+                            type="switch"
+                            id="autobid-switch"
+                            label=" Auto Bid"
+                          />
+                          </Col>
                         </Row>
                         <div className="d-flex justify-content-center mt-1 mx-2">
                           <div

@@ -161,7 +161,11 @@ export const AuthProvider = ({ children }) => {
                 }
             }
 
-            let minPrice = findMinPrice(winnerList)
+            let minPrice = doc.data().minimumBid
+            if (currentWinnerAmount != parseFloat(doc.data().amount)){
+                minPrice = findMinPrice(winnerList)
+            }
+            
             let minPriceAmount = findMinPriceAmount(winnerList, minPrice)
             //console.log(minPriceAmount)
            
