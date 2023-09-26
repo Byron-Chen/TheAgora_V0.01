@@ -345,7 +345,7 @@ export const AuctionCard = ({ item }) => {
                               ref={bidPriceRef}
                             />
                           </Col>
-                          <Col >
+                          <Col>
                           <Form.Check
                             type="switch"
                             id="autobid-switch"
