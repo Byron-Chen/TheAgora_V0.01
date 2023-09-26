@@ -97,7 +97,7 @@ export const AuthProvider = ({ children }) => {
         return count
     }
 
-    const updateWinnerList = (auctionRef, email, price, amount, date, powerBuy = false) => {
+    const updateWinnerList = (auctionRef, email, price, amount, date, autoBid = 0, powerBuy = false) => {
         return auctionRef.get().then((doc) => {
             let winnerList = doc.data().currentWinner || [];
             let currentWinnerAmount = parseFloat(doc.data().currentWinnerAmount)
@@ -105,7 +105,7 @@ export const AuthProvider = ({ children }) => {
             let powerBuyActive = doc.data().powerBuyActive  
             let currentCatchupList = doc.data().currentCatchup || [];
             let currentCatchupAmount = parseFloat(doc.data().currentCatchupAmount)
-            const winnerObject = { email: email, amount: amount, price: price, date:date}
+            const winnerObject = { email: email, amount: amount, price: price, autoBid: autoBid, date:date}
 
             //auto add no checks
             if (powerBuy) {
@@ -148,6 +148,15 @@ export const AuthProvider = ({ children }) => {
                 if (currentWinnerAmount > parseFloat(doc.data().amount)){
                     let i = winnerList.length - 1
                     while( currentWinnerAmount - parseFloat(doc.data().amount) > 0){
+                        while (parseFloat(winnerList[i].autoBid) != 0){
+                            winnerList[i].price += doc.data().minBidIncrement
+                            //console.log(winnerList[i].price, parseFloat(winnerList[i].autoBid))
+                            if (winnerList[i].price >= parseFloat(winnerList[i].autoBid)){
+                                winnerList[i].autoBid = 0
+                            }
+                            winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
+                        }
+
                         if (winnerList[i].amount <= currentWinnerAmount - parseFloat(doc.data().amount)){
                             currentWinnerAmount -= winnerList[i].amount
                             winnerList.splice(i, 1)
@@ -155,6 +164,8 @@ export const AuthProvider = ({ children }) => {
                             winnerList[i].amount -= (currentWinnerAmount - parseFloat(doc.data().amount))
                             currentWinnerAmount = parseFloat(doc.data().amount)
                         }
+                        
+                        
                         winnerList.sort((a,b) => b.price - a.price || a.amount - b.amount ||a.date - b.date)
                         i -= 1
                     }
@@ -182,7 +193,7 @@ export const AuthProvider = ({ children }) => {
         })
     }
 
-    const addBid = (auctionId, email, price, amount, powerBuy = false) => {
+    const addBid = (auctionId, email, price, autoBid, amount, powerBuy = false) => {
         const db = firestoreApp.collection('auctions');
         const auctionRef = db.doc(auctionId);
 
@@ -195,7 +206,7 @@ export const AuthProvider = ({ children }) => {
                     //check if amount over certain increment
                     if (parseFloat(price) >= (parseFloat(doc.data().curPrice) + parseFloat(doc.data().minBidIncrement)) && parseFloat(amount) == parseFloat(doc.data().amount)){
                         bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate });
-                        updateWinnerList(auctionRef, email, price, amount, currentDate, powerBuy)
+                        updateWinnerList(auctionRef, email, price, amount, currentDate, 0,  powerBuy)
                     }else{
                         alert("Powerbid Failed. Make sure max amount and check price")
                     }
@@ -204,8 +215,18 @@ export const AuthProvider = ({ children }) => {
                     if (parseFloat(price) == parseFloat(doc.data().minimumBid) && parseFloat(doc.data().amount) == parseFloat(doc.data().currentWinnerAmount)){
                         alert("Check bid price/amount correct")
                     }else{
+                        if(autoBid){
+                            if (doc.data().currentWinner[0] != undefined){
+                                var minPrice = parseFloat(doc.data().currentWinner[0].price) + parseFloat(doc.data().minBidIncrement)
+                            }else{
+                                var minPrice = doc.data().minimumBid + parseFloat(doc.data().minBidIncrement)
+                            }
+                            
+                            updateWinnerList(auctionRef, email, minPrice, amount,  currentDate, price)
+                        }else{            
+                            updateWinnerList(auctionRef, email, price, amount,  currentDate, 0)
+                        }
                         bidsList.unshift({ email: email, amount: amount, price: price , date: currentDate });
-                        updateWinnerList(auctionRef, email, price, amount,  currentDate)
                     }
              
                 }

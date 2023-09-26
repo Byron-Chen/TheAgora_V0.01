@@ -358,8 +358,9 @@ export const AuctionCard = ({ item }) => {
                             onClick={() =>
                               props.addBid(
                                 props.item.id,
-                                props.owner.email,
+                                props.owner.email, //                            
                                 bidPriceRef.current.value,
+                                document.getElementById("autobid-switch").checked,
                                 bidAmountRef.current.value
                               )
                               
