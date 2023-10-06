@@ -150,6 +150,7 @@ export const AuthProvider = ({ children }) => {
                     while( currentWinnerAmount - parseFloat(doc.data().amount) > 0){
                         while (parseFloat(winnerList[i].autoBid) != 0){
                             winnerList[i].price += doc.data().minBidIncrement
+                            winnerList[i].price = parseFloat(parseFloat(winnerList[i].price).toFixed(2))
                             //console.log(winnerList[i].price, parseFloat(winnerList[i].autoBid))
                             if (winnerList[i].price >= parseFloat(winnerList[i].autoBid)){
                                 winnerList[i].autoBid = 0
