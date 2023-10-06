@@ -328,6 +328,7 @@ export const AuctionCard = ({ item }) => {
                           <Col xs={5}>
                             <Form.Control
                               type="number"
+                              placeholder = "Amount"
                               required
                               ref={bidAmountRef}
                             />
@@ -340,7 +341,7 @@ export const AuctionCard = ({ item }) => {
                           <Col xs={5}>
                             <Form.Control
                               type="number"
-                              placeholder="$"
+                              placeholder={"$" + props.item.minimumBid}
                               required
                               ref={bidPriceRef}
                             />

@@ -6,6 +6,7 @@ import { useFirestore } from '../../hooks/useFirestore';
 import { AuctionCard } from './AuctionCard';
 import { SearchBar} from './SearchBar';
 import { Alert } from 'react-bootstrap';
+import { FunctionBar } from './FunctionBar';
 
 
 
@@ -45,6 +46,8 @@ export const AuctionBody = () => {
         {globalMsg && <Alert variant="info">{globalMsg}</Alert>}
         {currentUser && <AddAuction setAuction={setAuction} />}
 
+        <div className="col">
+          {/* <FunctionBar/> */}
         {returnDisplayAuctions(docs) && (
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
             {returnDisplayAuctions(docs).map((doc) =>{
@@ -52,6 +55,10 @@ export const AuctionBody = () => {
             })}
           </div>
           )}
+        </div>
+        
+
+
     </div>
   </div>
 }

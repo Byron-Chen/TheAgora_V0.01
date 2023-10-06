@@ -5,6 +5,7 @@ import { RegisterComp } from './RegisterComp'
 import {ProfilePage} from './ProfilePage'
 import { AddFriends } from './AddFriends'
 import { AuthContext } from '../../context/AuthContext'
+import { SearchBar } from '../auctions/SearchBar'
 import { Outlet, Link } from 'react-router-dom';
 
 
